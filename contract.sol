@@ -11,7 +11,7 @@ contract DGToken is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     Counters.Counter private _tokenIdCounter;
     uint256 MAX_SUPPLY = 1000;
-    uint256 MAX_LIMIT_PER_ADDRESS = 2;
+    uint256 MAX_LIMIT_PER_ADDRESS = 5;
 
     mapping(address => uint256) public _nftOwners;
 
@@ -20,14 +20,14 @@ contract DGToken is ERC721, ERC721Enumerable, ERC721URIStorage {
     function safeMint(address to, string memory uri) public {
         uint256 tokenId = _tokenIdCounter.current();
         require(tokenId <= MAX_SUPPLY, "MAX LIMIT REACHED TO MINT TOKENS");
+        _nftOwners[to] += 1;
         require(
-            _nftOwners[to] < MAX_LIMIT_PER_ADDRESS,
+            _nftOwners[to] <= MAX_LIMIT_PER_ADDRESS,
             "Cant mint more nfts using this address"
         );
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        _nftOwners[to] += 1;
     }
 
     // The following functions are overrides required by Solidity.
